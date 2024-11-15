@@ -77,6 +77,17 @@ const pdfFiles = [
     'usc54@118-106.pdf',
 ];
 
+async function loadPDF(pdfPath) {
+    const pdf = await pdfjsLib.getDocument(pdfPath).promise;
+    let text = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        text += content.items.map(item => item.str).join(' ');
+    }
+    return text;
+}
+
 async function loadPDFs() {
     const statusDiv = document.getElementById('pdf-status');
     statusDiv.style.display = 'block';
