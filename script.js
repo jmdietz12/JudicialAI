@@ -74,7 +74,7 @@ const pdfFiles = [
     'usc51@118-106.pdf',
     'usc52@118-106.pdf',
     'usc52@118-1065.pdf',
-    'usc54@118-106.pdf',
+    'usc54@118-106.pdf'
 ];
 
 async function loadPDF(pdfPath) {
