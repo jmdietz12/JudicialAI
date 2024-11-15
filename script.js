@@ -80,7 +80,7 @@ const pdfFiles = [
 async function loadPDFs() {
     const statusDiv = document.getElementById('pdf-status');
     statusDiv.style.display = 'block';
-    statusDiv.textContent = 'Loading PDF documents...';
+    statusDiv.textContent = 'Loading documents...';
     
     try {
         pdfContent = '';
@@ -95,13 +95,13 @@ async function loadPDFs() {
             .replace(/\s+/g, ' ')
             .trim();
         
-        statusDiv.textContent = `Successfully loaded ${pdfFiles.length} PDF documents!`;
+        statusDiv.textContent = `Successfully loaded ${pdfFiles.length} documents!`;
         setTimeout(() => {
             statusDiv.style.display = 'none';
         }, 3000);
         
     } catch (error) {
-        statusDiv.textContent = 'Error loading PDF documents. Please check the console for details.';
+        statusDiv.textContent = 'Error loading documents. Please check the console for details.';
         console.error('Error loading PDFs:', error);
     }
 }
@@ -150,7 +150,7 @@ async function sendMessage() {
                     ...messages,
                     {
                         role: "system",
-                        content: `Use context from the PDF documents: ${pdfContent}`
+                        content: `Use context from the documents: ${pdfContent}`
                     }
                 ],
                 temperature: 0
