@@ -93,14 +93,14 @@ async function loadPDFs() {
     statusDiv.style.display = 'block';
     statusDiv.textContent = 'Loading documents...';
     
-    try {
-        pdfContent = '';
-        
-        for (let i = 0; i < pdfFiles.length; i++) {
-            statusDiv.textContent = `Loading PDF ${i + 1} of ${pdfFiles.length}...`;
-            const text = await loadPDF(pdfFiles[i]);
-            pdfContent += text + '\n\n';
+try {
+    const pdfContents = {};
+    for (let i = 0; i < pdfFiles.length; i++) {
+        statusDiv.textContent = `Loading PDF ${i + 1} of ${pdfFiles.length}...`;
+        const text = await loadPDF(pdfFiles[i]);
+        pdfContents[pdfFiles[i]] = text; // Store each PDF content separately
         }
+    }
         
         pdfContent = pdfContent
             .replace(/\s+/g, ' ')
@@ -115,6 +115,14 @@ async function loadPDFs() {
         statusDiv.textContent = 'Error loading documents. Please check the console for details.';
         console.error('Error loading PDFs:', error);
     }
+}
+
+function getRelevantContent(query) {
+    const relevantContents = Object.entries(pdfContents)
+        .filter(([filename, content]) => content.includes(query)) // Basic keyword match
+        .map(([filename, content]) => `Document: ${filename}\n${content}`);
+    
+    return relevantContents.join('\n\n');
 }
 
 window.addEventListener('DOMContentLoaded', loadPDFs);
@@ -155,18 +163,21 @@ async function sendMessage() {
                 'Authorization': `Bearer ${OPENAI_API_KEY}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                model: "gpt-4o-mini",
-                messages: [
-                    ...messages,
-                    {
-                        role: "system",
-                        content: `Use context from the documents: ${pdfContent}`
-                    }
-                ],
-                temperature: 0
-            })
-        });
+            const userQuery = messages[messages.length - 1].content; // Get the latest user message
+            const relevantContent = getRelevantContent(userQuery); // Fetch relevant document sections
+
+body: JSON.stringify({
+    model: "gpt-4o-mini",
+    messages: [
+        ...messages,
+        {
+            role: "system",
+            content: `Use the following context to answer accurately:\n\n${relevantContent}`
+        }
+    ],
+    temperature: 0
+});
+
 
         const data = await response.json();
         
