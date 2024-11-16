@@ -129,10 +129,11 @@ window.addEventListener('DOMContentLoaded', loadPDFs);
 
 let messages = [{
     role: "system",
-    content: "You are a judicial authority with access to specific PDF documents. " +
-             "Use the context from these documents to answer questions accurately. " +
-             "Cite the specific documents from which you pulled information."
+    content: "You are a judicial assistant. You have access to several legal documents. " +
+             "Use their context to answer questions accurately. Only refer to relevant sections " +
+             "and cite the document name in your response."
 }];
+
 
 async function sendMessage() {
     const userInput = document.getElementById('user-input');
