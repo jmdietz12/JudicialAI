@@ -36,7 +36,6 @@ const pdfFiles = [
     'usc21@118-106.pdf',
     'usc22@118-106.pdf',
     'usc23@118-106.pdf',
-    'usc23@118-106.pdf',
     'usc24@118-106.pdf',
     'usc25@118-106.pdf',
     'usc26@118-106.pdf',
@@ -77,6 +76,8 @@ const pdfFiles = [
     'usc54@118-106.pdf'
 ];
 
+const pdfContents = {}; // Store PDF content separately for each document
+
 async function loadPDF(pdfPath) {
     const pdf = await pdfjsLib.getDocument(pdfPath).promise;
     let text = '';
@@ -94,36 +95,38 @@ async function loadPDFs() {
     statusDiv.textContent = 'Loading documents...';
     
     try {
-        pdfContent = '';
-        
         for (let i = 0; i < pdfFiles.length; i++) {
             statusDiv.textContent = `Loading PDF ${i + 1} of ${pdfFiles.length}...`;
             const text = await loadPDF(pdfFiles[i]);
-            pdfContent += text + '\n\n';
+            pdfContents[pdfFiles[i]] = text; // Store each document's content separately
         }
-        
-        pdfContent = pdfContent
-            .replace(/\s+/g, ' ')
-            .trim();
         
         statusDiv.textContent = `Successfully loaded ${pdfFiles.length} documents!`;
         setTimeout(() => {
             statusDiv.style.display = 'none';
         }, 3000);
-        
     } catch (error) {
         statusDiv.textContent = 'Error loading documents. Please check the console for details.';
         console.error('Error loading PDFs:', error);
     }
 }
 
+// Helper function to fetch relevant content
+function getRelevantContent(query) {
+    const relevantContents = Object.entries(pdfContents)
+        .filter(([filename, content]) => content.includes(query)) // Basic keyword match
+        .map(([filename, content]) => `Document: ${filename}\n${content}`);
+    
+    return relevantContents.join('\n\n') || "No relevant content found in the loaded documents.";
+}
+
 window.addEventListener('DOMContentLoaded', loadPDFs);
 
 let messages = [{
     role: "system",
-    content: "You are a judicial authority with access to specific PDF documents. " +
-             "Use the context from these documents to answer questions accurately. " +
-             "Cite the specific documents from which you pulled information."
+    content: "You are a judicial assistant. You have access to several legal documents. " +
+             "Use their context to answer questions accurately. Only refer to relevant sections " +
+             "and cite the document name in your response."
 }];
 
 async function sendMessage() {
@@ -149,6 +152,9 @@ async function sendMessage() {
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
     try {
+        const userQuery = messages[messages.length - 1].content; // Get the latest user message
+        const relevantContent = getRelevantContent(userQuery); // Fetch relevant document sections
+
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
@@ -161,7 +167,7 @@ async function sendMessage() {
                     ...messages,
                     {
                         role: "system",
-                        content: `Use context from the documents: ${pdfContent}`
+                        content: `Use the following context to answer accurately:\n\n${relevantContent}`
                     }
                 ],
                 temperature: 0
