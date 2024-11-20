@@ -93,14 +93,14 @@ async function loadPDFs() {
     statusDiv.style.display = 'block';
     statusDiv.textContent = 'Loading documents...';
     
-try {
-    const pdfContents = {};
-    for (let i = 0; i < pdfFiles.length; i++) {
-        statusDiv.textContent = `Loading PDF ${i + 1} of ${pdfFiles.length}...`;
-        const text = await loadPDF(pdfFiles[i]);
-        pdfContents[pdfFiles[i]] = text; // Store each PDF content separately
+    try {
+        pdfContent = '';
+        
+        for (let i = 0; i < pdfFiles.length; i++) {
+            statusDiv.textContent = `Loading PDF ${i + 1} of ${pdfFiles.length}...`;
+            const text = await loadPDF(pdfFiles[i]);
+            pdfContent += text + '\n\n';
         }
-    }
         
         pdfContent = pdfContent
             .replace(/\s+/g, ' ')
@@ -117,23 +117,14 @@ try {
     }
 }
 
-function getRelevantContent(query) {
-    const relevantContents = Object.entries(pdfContents)
-        .filter(([filename, content]) => content.includes(query)) // Basic keyword match
-        .map(([filename, content]) => `Document: ${filename}\n${content}`);
-    
-    return relevantContents.join('\n\n');
-}
-
 window.addEventListener('DOMContentLoaded', loadPDFs);
 
 let messages = [{
     role: "system",
-    content: "You are a judicial assistant. You have access to several legal documents. " +
-             "Use their context to answer questions accurately. Only refer to relevant sections " +
-             "and cite the document name in your response."
+    content: "You are a judicial authority with access to specific PDF documents. " +
+             "Use the context from these documents to answer questions accurately. " +
+             "Cite the specific documents from which you pulled information."
 }];
-
 
 async function sendMessage() {
     const userInput = document.getElementById('user-input');
@@ -164,21 +155,18 @@ async function sendMessage() {
                 'Authorization': `Bearer ${OPENAI_API_KEY}`,
                 'Content-Type': 'application/json'
             },
-            const userQuery = messages[messages.length - 1].content; // Get the latest user message
-            const relevantContent = getRelevantContent(userQuery); // Fetch relevant document sections
-
-body: JSON.stringify({
-    model: "gpt-4o-mini",
-    messages: [
-        ...messages,
-        {
-            role: "system",
-            content: `Use the following context to answer accurately:\n\n${relevantContent}`
-        }
-    ],
-    temperature: 0
-});
-
+            body: JSON.stringify({
+                model: "gpt-4o-mini",
+                messages: [
+                    ...messages,
+                    {
+                        role: "system",
+                        content: `Use context from the documents: ${pdfContent}`
+                    }
+                ],
+                temperature: 0
+            })
+        });
 
         const data = await response.json();
         
