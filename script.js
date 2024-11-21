@@ -14,13 +14,70 @@ const pdfFiles = [
     'usc01@118-106.pdf',
     'usc02@118-106.pdf',
     'usc03@118-106.pdf',
-    // Add other files as necessary
+    'usc04@118-106.pdf',
+    'usc05@118-106.pdf',
+    'usc05A@118-106.pdf',
+    'usc06@118-106.pdf',
+    'usc07@118-106.pdf',
+    'usc08@118-106.pdf',
+    'usc09@118-106.pdf',
+    'usc10@118-106.pdf',
+    'usc11A@118-106.pdf',
+    'usc12@118-106.pdf',
+    'usc13@118-106.pdf',
+    'usc14@118-106.pdf',
+    'usc15@118-106.pdf',
+    'usc16@118-106.pdf',
+    'usc17@118-106.pdf',
+    'usc18@118-106.pdf',
+    'usc18A@118-106.pdf',
+    'usc19@118-106.pdf',
+    'usc20@118-106.pdf',
+    'usc21@118-106.pdf',
+    'usc22@118-106.pdf',
+    'usc23@118-106.pdf',
+    'usc24@118-106.pdf',
+    'usc25@118-106.pdf',
+    'usc26@118-106.pdf',
+    'usc27@118-106.pdf',
+    'usc28@118-106.pdf',
+    'usc28A@118-106.pdf',
+    'usc29@118-106.pdf',
+    'usc30@118-106.pdf',
+    'usc31@118-106.pdf',
+    'usc32@118-106.pdf',
+    'usc33@118-106.pdf',
+    'usc34@118-106.pdf',
+    'usc35@118-106.pdf',
+    'usc36@118-106.pdf',
+    'usc37@118-106.pdf',
+    'usc38@118-106.pdf',
+    'usc39@118-106.pdf',
+    'usc40@118-106.pdf',
+    'usc41@118-106.pdf',
+    'usc42_ch124to164_Secs11901to19404@118-106.pdf',
+    'usc42_ch1to6A_Secs1to300mm-64@118-106.pdf',
+    'usc42_ch40to81_Secs3271to6892@118-106.pdf',
+    'usc42_ch7to7A_Secs301to1400v@118-106.pdf',
+    'usc42_ch82to123_Secs6901to11851@118-106.pdf',
+    'usc42_ch8to39_Secs1401to3259@118-106.pdf',
+    'usc43@118-106.pdf',
+    'usc44@118-106.pdf',
+    'usc45@118-106.pdf',
+    'usc46@118-106.pdf',
+    'usc47@118-106.pdf',
+    'usc48@118-106.pdf',
+    'usc49@118-106.pdf',
+    'usc50@118-106.pdf',
+    'usc50A@118-106.pdf',
+    'usc51@118-106.pdf',
+    'usc52@118-106.pdf',
+    'usc52@118-1065.pdf',
+    'usc54@118-106.pdf'
 ];
 
-const pdfIndex = {}; // Will store indexed content
-const chunkSize = 500; // Number of characters per chunk
+const pdfContents = {}; // Store PDF content separately for each document
 
-// PDF.js library must be loaded in the HTML file
 async function loadPDF(pdfPath) {
     const pdf = await pdfjsLib.getDocument(pdfPath).promise;
     let text = '';
@@ -32,61 +89,44 @@ async function loadPDF(pdfPath) {
     return text;
 }
 
-async function indexPDFs() {
+async function loadPDFs() {
     const statusDiv = document.getElementById('pdf-status');
     statusDiv.style.display = 'block';
-    statusDiv.textContent = 'Indexing documents...';
-
+    statusDiv.textContent = 'Loading documents...';
+    
     try {
         for (let i = 0; i < pdfFiles.length; i++) {
-            statusDiv.textContent = `Indexing PDF ${i + 1} of ${pdfFiles.length}...`;
+            statusDiv.textContent = `Loading PDF ${i + 1} of ${pdfFiles.length}...`;
             const text = await loadPDF(pdfFiles[i]);
-
-            // Chunk the text and index it
-            const chunks = text.match(new RegExp(`.{1,${chunkSize}}`, 'g')) || [];
-            chunks.forEach((chunk, index) => {
-                const keywords = chunk.toLowerCase().split(/\W+/); // Split into words
-                keywords.forEach(keyword => {
-                    if (!pdfIndex[keyword]) {
-                        pdfIndex[keyword] = [];
-                    }
-                    pdfIndex[keyword].push({ file: pdfFiles[i], chunk, index });
-                });
-            });
+            pdfContents[pdfFiles[i]] = text; // Store each document's content separately
         }
-
-        statusDiv.textContent = `Successfully indexed ${pdfFiles.length} documents!`;
+        
+        statusDiv.textContent = `Successfully loaded ${pdfFiles.length} documents!`;
         setTimeout(() => {
             statusDiv.style.display = 'none';
         }, 3000);
     } catch (error) {
-        statusDiv.textContent = 'Error indexing documents. Please check the console for details.';
-        console.error('Error indexing PDFs:', error);
+        statusDiv.textContent = 'Error loading documents. Please check the console for details.';
+        console.error('Error loading PDFs:', error);
     }
 }
 
-// Fetch relevant chunks based on user query
-function getRelevantChunks(query) {
-    const keywords = query.toLowerCase().split(/\W+/); // Split query into words
-    const matchingChunks = [];
-
-    keywords.forEach(keyword => {
-        if (pdfIndex[keyword]) {
-            matchingChunks.push(...pdfIndex[keyword]);
-        }
-    });
-
-    // Combine and deduplicate results
-    const deduplicated = [...new Map(matchingChunks.map(chunk => [chunk.chunk, chunk])).values()];
-    return deduplicated.slice(0, 10); // Limit to top 10 relevant chunks for efficiency
+// Helper function to fetch relevant content
+function getRelevantContent(query) {
+    const relevantContents = Object.entries(pdfContents)
+        .filter(([filename, content]) => content.includes(query)) // Basic keyword match
+        .map(([filename, content]) => `Document: ${filename}\n${content}`);
+    
+    return relevantContents.join('\n\n') || "No relevant content found in the loaded documents.";
 }
 
-window.addEventListener('DOMContentLoaded', indexPDFs);
+window.addEventListener('DOMContentLoaded', loadPDFs);
 
 let messages = [{
     role: "system",
-    content: "You are a judicial assistant with access to legal documents. " +
-             "Provide accurate answers by referring to indexed content from these documents."
+    content: "You are a judicial assistant. You have access to several legal documents. " +
+             "Use their context to answer questions accurately. Only refer to relevant sections " +
+             "and cite the document name in your response."
 }];
 
 async function sendMessage() {
@@ -113,11 +153,7 @@ async function sendMessage() {
 
     try {
         const userQuery = messages[messages.length - 1].content; // Get the latest user message
-        const relevantChunks = getRelevantChunks(userQuery); // Fetch relevant chunks
-        
-        const context = relevantChunks
-            .map(chunk => `From document ${chunk.file}:\n${chunk.chunk}`)
-            .join('\n\n');
+        const relevantContent = getRelevantContent(userQuery); // Fetch relevant document sections
 
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
@@ -131,7 +167,7 @@ async function sendMessage() {
                     ...messages,
                     {
                         role: "system",
-                        content: `Use the following context to answer accurately:\n\n${context}`
+                        content: `Use the following context to answer accurately:\n\n${relevantContent}`
                     }
                 ],
                 temperature: 0
