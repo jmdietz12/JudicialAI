@@ -11,7 +11,8 @@ function getApiKey() {
 }
 
 const pdfFiles = [
-    'usc01@118-106.pdf',
+    'basic-laws-book-2016.pdf'
+    /* 'usc01@118-106.pdf',
     'usc02@118-106.pdf',
     'usc03@118-106.pdf',
     'usc04@118-106.pdf',
@@ -73,7 +74,7 @@ const pdfFiles = [
     'usc51@118-106.pdf',
     'usc52@118-106.pdf',
     'usc52@118-1065.pdf',
-    'usc54@118-106.pdf'
+    'usc54@118-106.pdf' */
 ];
 
 const pdfContents = {}; // Store PDF content separately for each document
