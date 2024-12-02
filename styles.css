@@ -31,38 +31,9 @@ body {
 
 .page-container {
     display: grid;
-    grid-template-columns: 280px 1fr 300px;
+    grid-template-columns: 280px 1fr 300px; /* Sidebar + content + info panel */
     min-height: 100vh;
     max-height: 100vh;
-}
-
-.api-key-input-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 15px;
-}
-
-.api-key-input {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    width: 105%;
-    margin-right: 10px;
-}
-
-.key-button {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    width: 50%;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.key-button:hover {
-    background-color: var(--secondary-color);
 }
 
 .sidebar {
@@ -74,6 +45,8 @@ body {
     height: 100vh;
     position: fixed;
     width: 280px;
+    z-index: 2;
+    transition: transform 0.3s ease;
 }
 
 .sidebar-header {
@@ -85,75 +58,6 @@ body {
     flex-shrink: 0;
 }
 
-.sidebar-header i {
-    font-size: 1.5rem;
-    color: var(--accent-color);
-}
-
-.pdf-list {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-}
-
-.pdf-list h3 {
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 1rem;
-    color: var(--text-secondary);
-    flex-shrink: 0;
-}
-
-.pdf-items {
-    overflow-y: auto;
-    flex-grow: 1;
-    padding-right: 0.5rem;
-    margin-right: -0.5rem;
-}
-
-.pdf-status {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    padding: 0.5rem;
-    background-color: rgba(255, 255, 255, 0.05);
-    border-radius: 0.375rem;
-}
-
-.sidebar-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 1rem;
-    flex-shrink: 0;
-    margin-top: auto;
-}
-
-.pdf-items::-webkit-scrollbar {
-    width: 4px;
-}
-
-.pdf-items::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 2px;
-}
-
-.pdf-items::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 2px;
-}
-
-.pdf-items::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-}
-
-.footer-text {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-}
-
 .main-content {
     margin-left: 280px;
     padding: 2rem;
@@ -161,30 +65,11 @@ body {
     width: calc(100% - 280px);
 }
 
-.page-container {
-    display: block;
-    min-height: 100vh;
-    max-height: 100vh;
-}
-
-.info-panel {
-    position: fixed;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 300px;
-    background-color: var(--chat-bg);
-    border-left: 1px solid var(--border-color);
-    padding: 1.5rem;
-    overflow-y: auto;
-}
-
 .chat-container {
     background-color: var(--chat-bg);
     border-radius: 1rem;
     box-shadow: var(--shadow-lg);
     height: calc(100vh - 4rem);
-    width: 1278px;
     display: flex;
     flex-direction: column;
 }
@@ -197,30 +82,6 @@ body {
     align-items: center;
 }
 
-.chat-header-title {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.status-indicator {
-    width: 0.75rem;
-    height: 0.75rem;
-    border-radius: 50%;
-    background-color: var(--success-color);
-    position: relative;
-}
-
-.status-indicator.online::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background-color: var(--success-color);
-    animation: pulse 2s infinite;
-}
-
 .chat-messages {
     flex-grow: 1;
     overflow-y: auto;
@@ -230,39 +91,6 @@ body {
     gap: 1rem;
 }
 
-.chat-welcome {
-    text-align: center;
-    margin: auto;
-    max-width: 600px;
-}
-
-.welcome-icon {
-    font-size: 3rem;
-    color: var(--accent-color);
-    margin-bottom: 1rem;
-}
-
-.message {
-    max-width: 80%;
-    padding: 1rem;
-    border-radius: 1rem;
-    position: relative;
-}
-
-.user-message {
-    background-color: var(--message-user-bg);
-    color: white;
-    margin-left: auto;
-    border-bottom-right-radius: 0.25rem;
-}
-
-.bot-message {
-    background-color: var(--message-bot-bg);
-    color: var(--text-primary);
-    margin-right: auto;
-    border-bottom-left-radius: 0.25rem;
-}
-
 .chat-input-container {
     padding: 1.5rem;
     border-top: 1px solid var(--border-color);
@@ -270,305 +98,55 @@ body {
     gap: 1rem;
 }
 
-.input-wrapper {
-    flex-grow: 1;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background-color: var(--background-color);
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-}
-
-.input-icon {
-    color: var(--text-secondary);
-}
-
-#user-input {
-    flex-grow: 1;
-    border: none;
-    background: none;
-    outline: none;
-    font-size: 1rem;
-    color: var(--text-primary);
-}
-
-#send-button {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-#send-button:hover {
-    background-color: var(--secondary-color);
-}
-
 .info-panel {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 300px;
     background-color: var(--chat-bg);
     border-left: 1px solid var(--border-color);
     padding: 1.5rem;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
 }
 
-.info-header {
-    margin-bottom: 1.5rem;
-}
-
-.info-section {
-    padding: 1.5rem;
-    background-color: var(--background-color);
-    border-radius: 0.5rem;
-    margin-bottom: 1rem;
-}
-
-.info-section h4 {
-    color: var(--text-secondary);
-    margin-bottom: 1rem;
-}
-
-.info-stat {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 0.5;
-    }
-    50% {
-        transform: scale(1.5);
-        opacity: 0;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 0;
-    }
-}
-
-::-webkit-scrollbar {
-    width: 6px;
-}
-
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: var(--text-secondary);
-    border-radius: 3px;
-}
-
+/* Hide the sidebar and info panel on small screens */
 @media (max-width: 1280px) {
     .page-container {
-        grid-template-columns: 280px 1fr;
+        grid-template-columns: 1fr; /* One column layout for smaller screens */
+    }
+    .sidebar {
+        transform: translateX(-100%); /* Hide sidebar on smaller screens */
     }
     .info-panel {
-        display: none;
+        display: none; /* Hide info panel on smaller screens */
     }
 }
 
 @media (max-width: 768px) {
-    .page-container {
-        grid-template-columns: 1fr;
-    }
     .sidebar {
-        display: none;
+        transform: translateX(-100%); /* Hide sidebar completely */
     }
     .main-content {
         padding: 1rem;
     }
-}
-
-.pdf-status-item {
-    background-color: rgba(255, 255, 255, 0.05);
-    border-radius: 0.5rem;
-    padding: 1rem;
-    margin-bottom: 0.75rem;
-    transition: all 0.3s ease;
-}
-
-.pdf-status-item.complete {
-    border-left: 3px solid var(--success-color);
-}
-
-.pdf-status-item.error {
-    border-left: 3px solid #ef4444;
-}
-
-.pdf-status-icon {
-    margin-bottom: 0.5rem;
-    color: var(--accent-color);
-}
-
-.pdf-status-name {
-    font-weight: 500;
-    margin-bottom: 0.25rem;
-}
-
-.pdf-status-text {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    margin-bottom: 0.5rem;
-}
-
-.pdf-status-progress {
-    height: 4px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
-    overflow: hidden;
-    position: relative;
-}
-
-.pdf-status-progress::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    background-color: var(--accent-color);
-    transition: width 0.3s ease;
-    width: 0%;
-}
-
-.pdf-status-success {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 1rem;
-    background-color: rgba(34, 197, 94, 0.1);
-    color: var(--success-color);
-    border-radius: 0.5rem;
-    margin-top: 1rem;
-}
-
-.pdf-status-error {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 1rem;
-    background-color: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
-    border-radius: 0.5rem;
-    margin-top: 1rem;
-}
-
-@keyframes progress-slide {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(0); }
-}
-
-.pdf-status-progress::before {
-    animation: progress-slide 0.3s ease;
-}
-
-@media (max-width: 1280px) {
-    .main-content {
-        width: calc(100% - 280px);
-        margin-left: 280px;
-    }
-    .info-panel {
-        display: none;
+    .page-container {
+        grid-template-columns: 1fr; /* Full-width content on mobile */
     }
 }
 
+/* Adjust chat and sidebar width for mobile */
 @media (max-width: 768px) {
-    .sidebar {
-        display: none;
+    .chat-container {
+        width: 100%; /* Full width on mobile */
     }
-    .main-content {
+}
+
+/* Responsively handle chat container */
+@media (max-width: 1280px) {
+    .chat-container {
         width: 100%;
-        margin-left: 0;
+        margin-left: 0; /* Allow chat container to use full width */
     }
-}
-
-.processing-status-section {
-    background-color: var(--background-color);
-    border-radius: 0.5rem;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.processing-status-content {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.status-indicator {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-weight: 500;
-}
-
-.status-indicator.processing {
-    color: var(--accent-color);
-}
-
-.status-indicator.success {
-    color: var(--success-color);
-}
-
-.status-indicator.error {
-    color: #ef4444;
-}
-
-.documents-progress {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.progress-text {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-}
-
-.progress-bar {
-    height: 4px;
-    background-color: var(--border-color);
-    border-radius: 2px;
-    overflow: hidden;
-}
-
-.progress-fill {
-    height: 100%;
-    background-color: var(--accent-color);
-    transition: width 0.3s ease;
-}
-
-.status-indicator.success .progress-fill {
-    background-color: var(--success-color);
-}
-
-.status-indicator.error .progress-fill {
-    background-color: #ef4444;
-}
-
-@keyframes success-pop {
-    0% {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-.status-indicator.success i {
-    animation: success-pop 0.3s ease-out;
-}
-
-.info-section.processing-status-section {
-    position: sticky;
-    top: 0;
-    background-color: var(--background-color);
-    z-index: 1;
 }
