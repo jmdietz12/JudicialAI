@@ -16,11 +16,8 @@ class Chatbot {
         this.messageContainer = document.getElementById('chat-messages');
         this.userInput = document.getElementById('user-input');
         this.sendButton = document.getElementById('send-button');
-        this.toggleSidebarButton = document.getElementById('toggle-sidebar');
-        this.sidebar = document.querySelector('.sidebar');
-        this.mainContent = document.querySelector('.main-content'); // Adjust the class to match your layout
-
         this.conversationHistory = [];
+        
         this.initialize();
     }
 
@@ -35,7 +32,6 @@ class Chatbot {
         this.userInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.handleUserInput();
         });
-        this.toggleSidebarButton.addEventListener('click', () => this.toggleSidebar());
     }
 
     addMessage(message, isUser) {
@@ -66,9 +62,9 @@ class Chatbot {
             const relevantContent = await this.pdfProcessor.searchRelevantContent(userMessage);
 
             this.conversationHistory.push({ role: 'user', content: userMessage });
-
+            
             const response = await this.getOpenAIResponse(userMessage, relevantContent);
-
+            
             this.addBotMessage(response);
             this.conversationHistory.push({ role: 'assistant', content: response });
 
@@ -108,11 +104,12 @@ class Chatbot {
                         }
                     ],
                     temperature: 0,
+                    //max_tokens: 500
                 })
             });
 
             const data = await response.json();
-
+            
             if (data.error) {
                 throw new Error(data.error.message);
             }
@@ -122,16 +119,6 @@ class Chatbot {
         } catch (error) {
             console.error('OpenAI API Error:', error);
             throw error;
-        }
-    }
-
-    toggleSidebar() {
-        if (this.sidebar.classList.contains('hidden')) {
-            this.sidebar.classList.remove('hidden');
-            this.mainContent.classList.remove('full-width');
-        } else {
-            this.sidebar.classList.add('hidden');
-            this.mainContent.classList.add('full-width');
         }
     }
 }
