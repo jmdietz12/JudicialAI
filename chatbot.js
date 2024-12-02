@@ -16,8 +16,11 @@ class Chatbot {
         this.messageContainer = document.getElementById('chat-messages');
         this.userInput = document.getElementById('user-input');
         this.sendButton = document.getElementById('send-button');
+        this.imageInput = document.getElementById('image-upload');
+        this.toggleSidebarButton = document.getElementById('toggle-sidebar');
+        this.sidebar = document.querySelector('.sidebar');
         this.conversationHistory = [];
-        
+
         this.initialize();
     }
 
@@ -32,6 +35,8 @@ class Chatbot {
         this.userInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.handleUserInput();
         });
+        this.imageInput.addEventListener('change', (e) => this.handleImageUpload(e));
+        this.toggleSidebarButton.addEventListener('click', () => this.toggleSidebar());
     }
 
     addMessage(message, isUser) {
@@ -62,9 +67,9 @@ class Chatbot {
             const relevantContent = await this.pdfProcessor.searchRelevantContent(userMessage);
 
             this.conversationHistory.push({ role: 'user', content: userMessage });
-            
+
             const response = await this.getOpenAIResponse(userMessage, relevantContent);
-            
+
             this.addBotMessage(response);
             this.conversationHistory.push({ role: 'assistant', content: response });
 
@@ -88,7 +93,7 @@ class Chatbot {
                     'Authorization': `Bearer ${apiKey}`
                 },
                 body: JSON.stringify({
-                    model: 'gpt-4o',
+                    model: 'gpt-4',
                     messages: [
                         {
                             role: 'system',
@@ -104,12 +109,11 @@ class Chatbot {
                         }
                     ],
                     temperature: 0,
-                    //max_tokens: 500
                 })
             });
 
             const data = await response.json();
-            
+
             if (data.error) {
                 throw new Error(data.error.message);
             }
@@ -119,6 +123,61 @@ class Chatbot {
         } catch (error) {
             console.error('OpenAI API Error:', error);
             throw error;
+        }
+    }
+
+    async handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async () => {
+            try {
+                const imageData = reader.result; // Base64 data of the image
+                this.addUserMessage('Uploaded an image.');
+                const response = await this.analyzeImage(imageData);
+                this.addBotMessage(response);
+            } catch (error) {
+                console.error('Image Analysis Error:', error);
+                this.addBotMessage('I could not analyze the image. Please try again.');
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    async analyzeImage(imageData) {
+        if (!apiKey) {
+            return "No API key provided. Input your key using the text box above.";
+        }
+        try {
+            const response = await fetch('https://api.openai.com/v1/images/analysis', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    image: imageData
+                })
+            });
+
+            const data = await response.json();
+            if (data.error) {
+                throw new Error(data.error.message);
+            }
+
+            return data.result; // Assume the API returns analysis results here
+        } catch (error) {
+            console.error('Image Analysis API Error:', error);
+            throw error;
+        }
+    }
+
+    toggleSidebar() {
+        if (this.sidebar.classList.contains('hidden')) {
+            this.sidebar.classList.remove('hidden');
+        } else {
+            this.sidebar.classList.add('hidden');
         }
     }
 }
