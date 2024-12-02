@@ -16,11 +16,11 @@ class Chatbot {
         this.messageContainer = document.getElementById('chat-messages');
         this.userInput = document.getElementById('user-input');
         this.sendButton = document.getElementById('send-button');
-        this.imageInput = document.getElementById('image-upload');
         this.toggleSidebarButton = document.getElementById('toggle-sidebar');
         this.sidebar = document.querySelector('.sidebar');
-        this.conversationHistory = [];
+        this.mainContent = document.querySelector('.main-content'); // Adjust the class to match your layout
 
+        this.conversationHistory = [];
         this.initialize();
     }
 
@@ -35,7 +35,6 @@ class Chatbot {
         this.userInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.handleUserInput();
         });
-        this.imageInput.addEventListener('change', (e) => this.handleImageUpload(e));
         this.toggleSidebarButton.addEventListener('click', () => this.toggleSidebar());
     }
 
@@ -126,58 +125,13 @@ class Chatbot {
         }
     }
 
-    async handleImageUpload(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = async () => {
-            try {
-                const imageData = reader.result; // Base64 data of the image
-                this.addUserMessage('Uploaded an image.');
-                const response = await this.analyzeImage(imageData);
-                this.addBotMessage(response);
-            } catch (error) {
-                console.error('Image Analysis Error:', error);
-                this.addBotMessage('I could not analyze the image. Please try again.');
-            }
-        };
-        reader.readAsDataURL(file);
-    }
-
-    async analyzeImage(imageData) {
-        if (!apiKey) {
-            return "No API key provided. Input your key using the text box above.";
-        }
-        try {
-            const response = await fetch('https://api.openai.com/v1/images/analysis', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    image: imageData
-                })
-            });
-
-            const data = await response.json();
-            if (data.error) {
-                throw new Error(data.error.message);
-            }
-
-            return data.result; // Assume the API returns analysis results here
-        } catch (error) {
-            console.error('Image Analysis API Error:', error);
-            throw error;
-        }
-    }
-
     toggleSidebar() {
         if (this.sidebar.classList.contains('hidden')) {
             this.sidebar.classList.remove('hidden');
+            this.mainContent.classList.remove('full-width');
         } else {
             this.sidebar.classList.add('hidden');
+            this.mainContent.classList.add('full-width');
         }
     }
 }
