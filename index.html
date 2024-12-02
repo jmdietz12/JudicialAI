@@ -4,30 +4,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Judicial AI</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="header">
-        <h1>Judicial AI</h1>
-    </div>
-    <div class="api-key-input-container">
-        <input type="password" class="api-key-input" id="api-key-input" placeholder="Enter an OpenAI API Key"/>
-        <button class="use-key-button" onclick="getApiKey()">Use Key</button>
-    </div>
-    <div class="chat-container">
-        <div id="pdf-status"></div>
-        <div class="messages" id="messages">
-            <div class="message bot-message">
-                Hello, how can I help?
+    <div class="page-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-scale-balanced"></i>
+                <h2>Judicial AI</h2>
             </div>
-        </div>
-        <div class="loading" id="loading">...</div>
-        <div class="input-container">
-            <input type="text" id="user-input" placeholder="Type your message here..." />
-            <button onclick="sendMessage()">Send</button>
-        </div>
+            <div class="pdf-list">
+                <h3>Loaded Documents</h3>
+                <div class="pdf-items" id="pdf-items">
+                    <div class="pdf-status">Loading documents...</div>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="footer-text">
+                    United States Code
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="chat-header-title">
+                        <h1>Chat with the AI</h1>
+                        <span class="status-indicator online"></span>
+                    </div>
+                    <div class="api-key-input-container">
+                        <input type="password" class="api-key-input" id="api-key-input" placeholder="Enter an OpenAI API Key"/>
+                        <button class="key-button" onclick="getApiKey()">Confirm Key</button>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chat-messages">
+                    <div class="chat-welcome">
+                        <div class="welcome-icon">
+                            <i class="fa-solid fa-scale-balanced"></i>
+                        </div>
+                        <h2>Welcome to Judicial AI</h2>
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="input-wrapper">
+                        <i class="fas fa-message input-icon"></i>
+                        <input type="text" id="user-input" placeholder="Type your message...">
+                    </div>
+                    <button id="send-button">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <aside class="info-panel">
+            <div class="info-header">
+                <h3>Information</h3>
+            </div>
+            <div class="info-content">
+                <div class="info-section">
+                    <h4>System Features</h4>
+                    <div class="info-stat">
+                        <i class="fa-solid fa-file"></i>
+                        <span id="document-count">Knows all 54 Titles of the United States Code</span>
+                    </div>
+                    <div class="info-stat">
+                        <i class="fas fa-message"></i>
+                        <span id="citation-info">Provides Citations</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
     </div>
-    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script src="pdfProcessor.js"></script>
+    <script src="chatbot.js"></script>
+    <script src="pdfWorker.js"></script>
 </body>
 </html>
