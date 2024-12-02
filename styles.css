@@ -184,7 +184,7 @@ body {
     border-radius: 1rem;
     box-shadow: var(--shadow-lg);
     height: calc(100vh - 4rem);
-    width: 1278px;
+    width: fit-content;
     display: flex;
     flex-direction: column;
 }
