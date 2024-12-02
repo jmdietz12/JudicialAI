@@ -32,6 +32,30 @@ class Chatbot {
         this.userInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.handleUserInput();
         });
+
+        // Event listener for dropdown item selection
+        const items = document.querySelectorAll('.dropdown-item');
+        items.forEach(item => {
+            item.addEventListener('click', () => {
+                const value = item.getAttribute('data-value');
+                this.userInput.value = value;
+                document.getElementById('dropdownMenu').style.display = 'none'; // Hide the dropdown
+            });
+        });
+
+        // Close the dropdown if clicked outside
+        document.addEventListener('click', (event) => {
+            const dropdown = document.querySelector('.dropdown');
+            if (!dropdown.contains(event.target)) {
+                document.getElementById('dropdownMenu').style.display = 'none';
+            }
+        });
+
+        // Toggle dropdown visibility on button click
+        document.getElementById('dropdownButton').addEventListener('click', () => {
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        });
     }
 
     addMessage(message, isUser) {
